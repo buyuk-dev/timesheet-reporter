@@ -30,5 +30,5 @@ Template exists in *config.py.dist* file, you should rename it to *config.py* an
 2. load: loads previously saved app state,
 3. generate: generates xlsx file with raport,
 4. send: send generated xlsx file to defined list of receipients,
-5. + recp: add new receipient field,
+5. \+ recp: add new receipient field,
 6. reset: reset fields to default state.
