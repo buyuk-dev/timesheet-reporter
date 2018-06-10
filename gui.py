@@ -3,12 +3,9 @@ from datetime import datetime, timedelta
 import json
 
 import config
-#import sendmail
+import sendmail
 import writer
 
-
-def generateDates():
-    return list((datetime.today() - timedelta(days=4) + timedelta(days=i)).date() for i in range(5))
 
 def convertNonStringKeys(dict_):
     return {str(key): val for key, val in dict_.items()}
@@ -99,7 +96,6 @@ class GuiApp:
         self.entries = list()
 
         if entries is None:
-            #for date in generateDates():
             for date in [config.monday + timedelta(dayofweek) for dayofweek in range(5)]:
                 self.addEntry(date)
         else:
@@ -193,14 +189,13 @@ class GuiApp:
         self.initEntries(data["entries"])
 
     def onSend(self):
-        #sendmail.send_mail(
-        #    config.sender_address,
-        #    self.dataModel.getReceipients(),
-        #    config.message_title,
-        #    config.message_body,
-        #    [config.xls_path]
-        #)
-        pass
+        sendmail.send_mail(
+            config.sender_address,
+            self.dataModel.getReceipients(),
+            config.message_title,
+            config.message_body,
+            [config.xls_path]
+        )
 
     def onReset(self):
         self.reset()
