@@ -99,7 +99,8 @@ class GuiApp:
         self.entries = list()
 
         if entries is None:
-            for date in generateDates():
+            #for date in generateDates():
+            for date in [config.monday + timedelta(dayofweek) for dayofweek in range(5)]:
                 self.addEntry(date)
         else:
             for date, entry in entries.items():
