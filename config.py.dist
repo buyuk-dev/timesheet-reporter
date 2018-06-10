@@ -1,0 +1,43 @@
+from datetime import datetime, timedelta
+import os
+
+
+# Receipient email addresses
+receipients = [
+]
+
+
+# Sender email address (must match your outlook account)
+sender_address = ""
+
+
+# Helper variables
+today = datetime.today()
+weekday_delta = timedelta(days=today.weekday())
+
+monday = today - weekday_delta                 # monday
+friday = beg_of_week + timedelta(days=4)       # friday
+
+
+# File paths
+xls_path = os.path.abspath(monday.strftime("%m_%d_%Y.xlsx"))
+save_path = os.path.abspath("data.json")
+
+
+# Email template:
+time_period = "{}-{}.{}".format(
+	monday.day,
+	friday.day,
+	friday.strftime("%m.%Y")
+)
+
+message_title = "weekly time report: {}".format(time_period)
+message_body = \
+"""
+Czesc, 
+
+w zalaczniku przesylam raport za biezacy tydzien. 
+
+Pozdrawiam,
+Michał
+"""

@@ -1,0 +1,6 @@
+config.py
+*.xlsx
+*.json
+*.swp
+*.pyc
+__pycache__/*
