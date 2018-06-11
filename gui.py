@@ -44,7 +44,7 @@ class DataModel:
 
     def getEntries(self):
         return {
-            date: {
+            date.date(): {
                 "description": entry["description"].get(),
                 "hours": entry["hours"].get()
             }
@@ -142,7 +142,7 @@ class GuiApp:
         frame = tkinter.Frame(self.rootFrame, width=100)
         frame.pack()
 
-        label = tkinter.Label(frame, text=date.strftime("%d.%m.%Y - %As"), width=20, anchor='w')
+        label = tkinter.Label(frame, text=date.strftime("%d.%m.%Y - %A"), width=20, anchor='w')
         label.pack(side="left")
 
         hour = tkinter.Entry(frame, width=5, textvariable=var_hours)
@@ -171,7 +171,7 @@ class GuiApp:
         entries = self.dataModel.getEntries()
         data = [
             ("Michal Michalski",
-            str(key),
+            str(key.date()),
             entries[key]["hours"],
             entries[key]["description"])
             for key in sorted(entries)
