@@ -11,7 +11,7 @@ def convertNonStringKeys(dict_):
     return {str(key): val for key, val in dict_.items()}
 
 def convertBackToDateKeys(dict_):
-    return {datetime.strptime(key, "%Y-%m-%d").date(): val for key, val in dict_.items()}
+    return {datetime.strptime(key, "%Y-%m-%d"): val for key, val in dict_.items()}
 
 
 class DataModel:
@@ -171,7 +171,7 @@ class GuiApp:
         entries = self.dataModel.getEntries()
         data = [
             ("Michal Michalski",
-            str(key.date()),
+            str(key),
             entries[key]["hours"],
             entries[key]["description"])
             for key in sorted(entries)
