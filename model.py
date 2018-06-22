@@ -1,4 +1,7 @@
 import tkinter
+import json
+from datetime import datetime, timedelta
+import config
 
 def convertNonStringKeys(dict_):
     return {str(key): val for key, val in dict_.items()}
@@ -6,7 +9,9 @@ def convertNonStringKeys(dict_):
 def convertBackToDateKeys(dict_):
     return {datetime.strptime(key, "%Y-%m-%d"): val for key, val in dict_.items()}
 
-
+def get_week_dates():
+    return [config.monday + timedelta(dayofweek) for dayofweek in range(config.week_length)]
+    
 class DataModel:
 
     def __init__(self):

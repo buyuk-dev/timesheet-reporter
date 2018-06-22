@@ -1,19 +1,18 @@
 import tkinter
-from datetime import datetime, timedelta
-import json
 
 import config
 import sendmail
 import writer
 import sysutils
-from model import DataModel
+
+from model import DataModel, get_week_dates
 
 
 class GuiApp:
 
     def __init__(self):
         self.root = tkinter.Tk()
-        self.root.title("Time Report Creator")
+        self.root.title(config.app_title)
         self.root.protocol("WM_DELETE_WINDOW", self.root.quit)
 
         self.rootFrame = tkinter.Frame(self.root)
@@ -26,13 +25,11 @@ class GuiApp:
         self.initEntries()
 
     def initEntries(self, entries=None):
-        self.entriesHeader = tkinter.Label(self.rootFrame, text="Work entries")
+        self.entriesHeader = tkinter.Label(self.rootFrame, text=config.entries_section_label)
         self.entriesHeader.pack()
-
         self.entries = list()
-
         if entries is None:
-            for date in [config.monday + timedelta(dayofweek) for dayofweek in range(5)]:
+            for date in get_week_dates():
                 self.addEntry(date)
         else:
             for date, entry in entries.items():
@@ -40,7 +37,7 @@ class GuiApp:
 
     def initReceipients(self, receipients=config.receipients):
         self.receipientsFrame = tkinter.Frame(self.rootFrame)
-        self.recpLabel = tkinter.Label(self.receipientsFrame, text="Receipients")
+        self.recpLabel = tkinter.Label(self.receipientsFrame, text=config.receipients_section_label)
         self.recpLabel.pack()
         self.receipientEntries = []
         self.receipientsFrame.pack()
@@ -49,20 +46,20 @@ class GuiApp:
 
     def initMenu(self):
         self.menu = tkinter.Frame(self.rootFrame)
-        self.generateBtn = tkinter.Button(self.menu, text='generate')
+        self.generateBtn = tkinter.Button(self.menu, text=config.generate_btn_label)
         self.generateBtn.configure(command = lambda : self.onGenerate())
 
-        self.saveBtn = tkinter.Button(self.menu, text='save')
+        self.saveBtn = tkinter.Button(self.menu, text=config.save_btn_label)
         self.saveBtn.configure(command = lambda : self.onSave())
 
-        self.loadBtn = tkinter.Button(self.menu, text='load')
+        self.loadBtn = tkinter.Button(self.menu, text=config.load_btn_label)
         self.loadBtn.configure(command = lambda : self.onLoad())
 
-        self.sendBtn = tkinter.Button(self.menu, text='send')
+        self.sendBtn = tkinter.Button(self.menu, text=config.send_btn_label)
         self.sendBtn.configure(command = lambda : self.onSend())
 
-        self.addReceipientBtn = tkinter.Button(self.menu, text="+ recp", command=lambda: self.onNewReceipient())
-        self.resetBtn = tkinter.Button(self.menu, text="reset", command=lambda: self.onReset())
+        self.addReceipientBtn = tkinter.Button(self.menu, text=config.add_receipient_btn_label, command=lambda: self.onNewReceipient())
+        self.resetBtn = tkinter.Button(self.menu, text=config.reset_btn_label, command=lambda: self.onReset())
 
         self.menu.pack()
         self.saveBtn.pack(side='left')
@@ -75,16 +72,16 @@ class GuiApp:
     def addEntry(self, date, hour=8, description=""):
         var_entry, var_hours = self.dataModel.addEntry(date, description, hour)
 
-        frame = tkinter.Frame(self.rootFrame, width=100)
+        frame = tkinter.Frame(self.rootFrame, width=config.entries_frame_width)
         frame.pack()
 
-        label = tkinter.Label(frame, text=date.strftime("%d.%m.%Y - %A"), width=20, anchor='w')
+        label = tkinter.Label(frame, text=date.strftime(config.date_label_format), width=config.date_label_width, anchor='w')
         label.pack(side="left")
 
-        hour = tkinter.Entry(frame, width=5, textvariable=var_hours)
+        hour = tkinter.Entry(frame, width=config.hours_entry_width, textvariable=var_hours)
         hour.pack(side="left")
 
-        entry = tkinter.Entry(frame, width=50, textvariable=var_entry)
+        entry = tkinter.Entry(frame, width=config.description_entry_width, textvariable=var_entry)
         entry.pack(side="left")
 
         self.entries.append((label, hour, entry))
@@ -97,7 +94,7 @@ class GuiApp:
 
     def onNewReceipient(self, receipient=None):
         var = self.dataModel.addReceipient(receipient)
-        entry = tkinter.Entry(self.receipientsFrame, width=50, textvariable=var)
+        entry = tkinter.Entry(self.receipientsFrame, width=config.receipient_entry_width, textvariable=var)
         self.receipientEntries.append(entry)
         entry.pack()
         if receipient is not None:
@@ -106,7 +103,7 @@ class GuiApp:
     def onGenerate(self):
         entries = self.dataModel.getEntries()
         data = [
-            ("Michal Michalski",
+            (config.employee_name,
             str(key),
             entries[key]["hours"],
             entries[key]["description"])
@@ -115,7 +112,7 @@ class GuiApp:
         writer.write_raport(data, config.xls_path)
 
     def onSave(self):
-        self.dataModel.save("data.json")
+        self.dataModel.save(config.save_path)
 
     def onLoad(self):
         self.reset()
@@ -145,8 +142,9 @@ class GuiApp:
 
 if __name__ == '__main__':
     try:
-        sysutils.hide_terminal_window()
+        #sysutils.hide_terminal_window()
         app = GuiApp()
         app.run()
     except Exception as e:
         print(e)
+        input()
