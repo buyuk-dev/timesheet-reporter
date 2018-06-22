@@ -1,17 +1,10 @@
-import tkinter
+from tkinter import StringVar, IntVar
 import json
 from datetime import datetime, timedelta
 import config
+import common
 
-def convertNonStringKeys(dict_):
-    return {str(key): val for key, val in dict_.items()}
 
-def convertBackToDateKeys(dict_):
-    return {datetime.strptime(key, "%Y-%m-%d"): val for key, val in dict_.items()}
-
-def get_week_dates():
-    return [config.monday + timedelta(dayofweek) for dayofweek in range(config.week_length)]
-    
 class DataModel:
 
     def __init__(self):
@@ -19,7 +12,7 @@ class DataModel:
         self.entries = dict()
 
     def addReceipient(self, recp_val=""):
-        recp = tkinter.StringVar()
+        recp = StringVar()
         recp.set(recp_val)
         self.receipients.append(recp)
         return recp
@@ -28,10 +21,10 @@ class DataModel:
         return [recp.get() for recp in self.receipients]
 
     def addEntry(self, date, desc_val="", hours_val=8):
-        entry = tkinter.StringVar()
+        entry = StringVar()
         entry.set(desc_val)
 
-        hours = tkinter.IntVar()
+        hours = IntVar()
         hours.set(hours_val)
 
         self.entries[date] = {
@@ -53,7 +46,7 @@ class DataModel:
         with open(filename, "w") as json_file:
             data = {
                 "receipients": self.getReceipients(),
-                "entries": convertNonStringKeys(self.getEntries())
+                "entries": common.convertNonStringKeys(self.getEntries())
             }
             json_str = json.dumps(data, indent=4, sort_keys=True, default=str)
             json_file.write(json_str)
@@ -61,7 +54,7 @@ class DataModel:
     def load(self, filename):
         with open(filename, "r") as json_file:
             data = json.load(json_file)
-            data["entries"] = convertBackToDateKeys(data["entries"])
+            data["entries"] = common.convertBackToDateKeys(data["entries"])
             return data
 
     def reset(self):

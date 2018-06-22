@@ -4,8 +4,9 @@ import config
 import sendmail
 import writer
 import sysutils
+import common
 
-from model import DataModel, get_week_dates
+from model import DataModel
 
 
 class GuiApp:
@@ -29,7 +30,7 @@ class GuiApp:
         self.entriesHeader.pack()
         self.entries = list()
         if entries is None:
-            for date in get_week_dates():
+            for date in common.get_dates_range(config.monday, config.week_length):
                 self.addEntry(date)
         else:
             for date, entry in entries.items():
@@ -142,7 +143,7 @@ class GuiApp:
 
 if __name__ == '__main__':
     try:
-        #sysutils.hide_terminal_window()
+        sysutils.hide_terminal_window()
         app = GuiApp()
         app.run()
     except Exception as e:
