@@ -2,25 +2,30 @@ from datetime import datetime, timedelta
 import os
 
 
+employee_name = "Replace Me"
+
+
 # Receipient email addresses
 receipients = [
 ]
 
 
 # Sender email address (must match your outlook account)
-sender_address = ""
+sender_address = "replace@me.com"
 
 
 # Helper variables
+week_length = 5
 today = datetime.today()
 weekday_delta = timedelta(days=today.weekday())
 
-monday = today - weekday_delta                 # monday
-friday = beg_of_week + timedelta(days=4)       # friday
+monday = today - weekday_delta            # monday
+friday = monday + timedelta(days=4)       # friday
 
 
 # File paths
-xls_path = os.path.abspath(monday.strftime("%m_%d_%Y.xlsx"))
+xls_filename = monday.strftime("%Y_%m_%d.xlsx")
+xls_path = os.path.normpath("{}".format(xls_filename))
 save_path = os.path.abspath("data.json")
 
 
@@ -41,3 +46,23 @@ w zalaczniku przesylam raport za biezacy tydzien.
 Pozdrawiam,
 Michał
 """
+
+
+# Application config
+app_title = "Time Report Creator"
+
+entries_section_label = "Work entries"
+receipients_section_label = "Receipients"
+generate_btn_label = "generate"
+save_btn_label = "save"
+load_btn_label = "load"
+send_btn_label = "send"
+add_receipient_btn_label = "new recp"
+reset_btn_label = "reset"
+date_label_format = "%d.%m.%Y - %A"
+
+entries_frame_width = 100
+date_label_width = 20
+hours_entry_width = 8
+description_entry_width = 50
+receipient_entry_width = 50
