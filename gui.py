@@ -1,7 +1,8 @@
 import tkinter
 
 import config
-import sendmail
+import send_mail_outlook
+import send_mail
 import writer
 import sysutils
 import common
@@ -123,13 +124,23 @@ class GuiApp:
         self.initEntries(data["entries"])
 
     def onSend(self):
-        sendmail.send_mail(
-            config.sender_address,
-            self.dataModel.getReceipients(),
-            config.message_title,
-            config.message_body,
-            [config.xls_path]
-        )
+        if config.use_outlook:
+            send_mail_outlook.send_mail(
+                config.sender_address,
+                self.dataModel.getReceipients(),
+                config.message_title,
+                config.message_body,
+                [config.xls_path]
+            )
+        else:
+            send_mail.send_mail(
+                config.server_address,
+                self.dataModel.getReceipients(),
+                config.message_title,
+                config.message_body,
+                [config.xls_path],
+                config.credentials
+            )
 
     def onReset(self):
         self.reset()
