@@ -134,7 +134,7 @@ class GuiApp:
             )
         else:
             send_mail.send_mail(
-                config.server_address,
+                config.sender_address,
                 self.dataModel.getReceipients(),
                 config.message_title,
                 config.message_body,

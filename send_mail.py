@@ -45,7 +45,6 @@ def send_mail(sender, receivers, subject, body, files=[], credentials=None, serv
         part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(f))
         msg.attach(part)
 
-    print(server.host, server.port)
     smtp = smtplib.SMTP(server.host, server.port)
     if server.tls:
         smtp.starttls()
