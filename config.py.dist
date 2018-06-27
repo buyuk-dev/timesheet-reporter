@@ -2,7 +2,14 @@ from datetime import datetime, timedelta
 import os
 
 
-employee_name = "Replace Me"
+use_outlook = False
+class credentials:
+    ''' required if use_outlook is False '''
+    username = None
+    password = None
+
+
+employee_name = "Your Name"
 
 
 # Receipient email addresses
@@ -11,7 +18,7 @@ receipients = [
 
 
 # Sender email address (must match your outlook account)
-sender_address = "replace@me.com"
+sender_address = "your email address"
 
 
 # Helper variables
@@ -44,8 +51,8 @@ Czesc,
 w zalaczniku przesylam raport za biezacy tydzien. 
 
 Pozdrawiam,
-Michał
-"""
+{}
+""".format(employee_name)
 
 
 # Application config
