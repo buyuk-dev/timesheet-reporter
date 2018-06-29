@@ -27,7 +27,7 @@ today = datetime.today()
 weekday_delta = timedelta(days=today.weekday())
 
 monday = today - weekday_delta            # monday
-friday = monday + timedelta(days=4)       # friday
+friday = monday + timedelta(days=week_length-1)       # friday
 
 
 # File paths
