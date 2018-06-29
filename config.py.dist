@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import os
 
 
-use_outlook = False
+use_outlook = True
 class credentials:
     ''' required if use_outlook is False '''
     username = None
@@ -32,7 +32,7 @@ friday = monday + timedelta(days=4)       # friday
 
 # File paths
 xls_filename = monday.strftime("%Y_%m_%d.xlsx")
-xls_path = os.path.normpath("{}".format(xls_filename))
+xls_path = os.path.abspath(os.path.normpath("{}".format(xls_filename)))
 save_path = os.path.abspath("data.json")
 
 
@@ -42,6 +42,7 @@ time_period = "{}-{}.{}".format(
 	friday.day,
 	friday.strftime("%m.%Y")
 )
+
 
 message_title = "weekly time report: {}".format(time_period)
 message_body = \
