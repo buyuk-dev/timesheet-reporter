@@ -1,25 +1,14 @@
 import tkinter
-import importlib.util
-import os
+import sysutils
 
-#import config
 import send_mail_outlook
 import send_mail
 import writer
-import sysutils
 import common
+import model
 
-from model import DataModel
+import config
 
-
-def load_config(path, module_name="config"):
-    config_path = os.path.abspath(path)
-    spec = importlib.util.spec_from_file_location(module_name, config_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-config = load_config("config.py")
-    
 
 class RootFrame(tkinter.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -37,7 +26,7 @@ class GuiApp:
         self.rootFrame = RootFrame(self.tk_context)
         self.rootFrame.pack()
 
-        self.dataModel = DataModel()
+        self.dataModel = model.DataModel()
 
         self.initMenu()
         self.initReceipients()
@@ -107,7 +96,7 @@ class GuiApp:
 
     def reset(self):
         self.rootFrame.destroy()
-        self.rootFrame = tkinter.Frame(self.root)
+        self.rootFrame = RootFrame(self.tk_context)
         self.dataModel.reset()
         self.rootFrame.pack()
 
@@ -167,13 +156,3 @@ class GuiApp:
 
     def run(self):
         tkinter.mainloop()
-
-
-if __name__ == '__main__':
-    try:
-        sysutils.hide_terminal_window()
-        app = GuiApp()
-        app.run()
-    except Exception as e:
-        print(e)
-        input()
