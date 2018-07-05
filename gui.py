@@ -1,6 +1,8 @@
 import tkinter
+import importlib.util
+import os
 
-import config
+#import config
 import send_mail_outlook
 import send_mail
 import writer
@@ -10,14 +12,29 @@ import common
 from model import DataModel
 
 
+def load_config(path, module_name="config"):
+    config_path = os.path.abspath(path)
+    spec = importlib.util.spec_from_file_location(module_name, config_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+config = load_config("config.py")
+    
+
+class RootFrame(tkinter.Frame):
+    def __init__(self, parent, *args, **kwargs):
+        tkinter.Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+
+
 class GuiApp:
 
     def __init__(self):
-        self.root = tkinter.Tk()
-        self.root.title(config.app_title)
-        self.root.protocol("WM_DELETE_WINDOW", self.root.quit)
+        self.tk_context = tkinter.Tk()
+        self.tk_context.title(config.app_title)
+        self.tk_context.protocol("WM_DELETE_WINDOW", self.tk_context.quit)
 
-        self.rootFrame = tkinter.Frame(self.root)
+        self.rootFrame = RootFrame(self.tk_context)
         self.rootFrame.pack()
 
         self.dataModel = DataModel()
