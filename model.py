@@ -1,7 +1,7 @@
 from tkinter import StringVar, IntVar
 import json
 from datetime import datetime, timedelta
-import config
+
 import common
 
 
