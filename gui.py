@@ -22,15 +22,7 @@ class GuiApp:
         self.tk_context = tkinter.Tk()
         self.tk_context.title(config.app_title)
         self.tk_context.protocol("WM_DELETE_WINDOW", self.tk_context.quit)
-
-        self.rootFrame = RootFrame(self.tk_context)
-        self.rootFrame.pack()
-
-        self.dataModel = model.DataModel()
-
-        self.initMenu()
-        self.initReceipients()
-        self.initEntries()
+        self.onReset()
 
     def initEntries(self, entries=None):
         self.entriesHeader = tkinter.Label(self.rootFrame, text=config.entries_section_label)
@@ -95,9 +87,18 @@ class GuiApp:
         self.entries.append((label, hour, entry))
 
     def reset(self):
-        self.rootFrame.destroy()
+        try:
+            self.rootFrame.destroy()
+        except:
+            pass
+
         self.rootFrame = RootFrame(self.tk_context)
-        self.dataModel.reset()
+
+        try:
+            self.dataModel.reset()
+        except:
+            self.dataModel = model.DataModel()
+
         self.rootFrame.pack()
 
     def onNewReceipient(self, receipient=None):
