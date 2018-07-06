@@ -2,7 +2,6 @@ import tkinter
 import sysutils
 import os
 
-import send_mail_outlook
 import send_mail
 import writer
 import common
@@ -156,22 +155,18 @@ class GuiApp:
 
     def onSend(self):
         if config.use_outlook:
-            send_mail_outlook.send_mail(
-                config.sender_address,
-                self.dataModel.getReceipients(),
-                config.message_title,
-                config.message_body,
-                [config.xls_path]
-            )
+            kwargs = {}
         else:
-            send_mail.send_mail(
-                config.sender_address,
-                self.dataModel.getReceipients(),
-                config.message_title,
-                config.message_body,
-                [config.xls_path],
-                config.credentials
-            )
+            kwargs = {"credentials": config.credentials}
+
+        send_mail.send_mail(
+            config.sender_address,
+            self.dataModel.getReceipients(),
+            config.message_title,
+            config.message_body,
+            [config.xls_path],
+            **kwargs
+        )
 
     def onReset(self):
         self.rootFrame.destroy()
