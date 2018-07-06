@@ -12,10 +12,45 @@ import config
 
 class RootFrame(tkinter.Frame):
     def __init__(self, parent, *args, **kwargs):
-        tkinter.Frame.__init__(self, parent, *args, **kwargs)
+        tkinter.Frame.__init__(self, parent.tk_context, *args, **kwargs)
         self.parent = parent
 
+        
+class AppMenu(tkinter.Frame):
 
+    def __init__(self, parent, *args, **kwargs):
+        tkinter.Frame.__init__(self, parent, *args, **kwargs)
+
+        self.parent = parent
+        app_instance = self.parent.parent
+
+        self.save = tkinter.Button(self, text=config.save_btn_label)
+        self.save.configure(command = lambda : app_instance.onSave())
+        self.save.pack(side='left')
+
+        self.load = tkinter.Button(self, text=config.load_btn_label)
+        self.load.configure(command = lambda : app_instance.onLoad())
+        self.load.pack(side='left')
+
+        self.send = tkinter.Button(self, text=config.send_btn_label)
+        self.send.configure(command = lambda : app_instance.onSend())
+        self.send.pack(side='left')
+
+        self.addReceipient = tkinter.Button(self, text=config.add_receipient_btn_label)
+        self.addReceipient.configure(command = lambda: app_instance.onNewReceipient())
+        self.addReceipient.pack(side='left')
+
+        self.generate = tkinter.Button(self, text=config.generate_btn_label)
+        self.generate.configure(command = lambda : app_instance.onGenerate())
+        self.generate.pack(side='left')
+        
+        self.reset = tkinter.Button(self, text=config.reset_btn_label)
+        self.reset.configure(command = lambda: app_instance.onReset())
+        self.reset.pack(side='left')
+
+        self.pack()        
+
+        
 class GuiApp:
 
     def __init__(self):
@@ -44,31 +79,6 @@ class GuiApp:
         for recp in receipients:
             self.onNewReceipient(recp)
 
-    def initMenu(self):
-        self.menu = tkinter.Frame(self.rootFrame)
-        self.generateBtn = tkinter.Button(self.menu, text=config.generate_btn_label)
-        self.generateBtn.configure(command = lambda : self.onGenerate())
-
-        self.saveBtn = tkinter.Button(self.menu, text=config.save_btn_label)
-        self.saveBtn.configure(command = lambda : self.onSave())
-
-        self.loadBtn = tkinter.Button(self.menu, text=config.load_btn_label)
-        self.loadBtn.configure(command = lambda : self.onLoad())
-
-        self.sendBtn = tkinter.Button(self.menu, text=config.send_btn_label)
-        self.sendBtn.configure(command = lambda : self.onSend())
-
-        self.addReceipientBtn = tkinter.Button(self.menu, text=config.add_receipient_btn_label, command=lambda: self.onNewReceipient())
-        self.resetBtn = tkinter.Button(self.menu, text=config.reset_btn_label, command=lambda: self.onReset())
-
-        self.menu.pack()
-        self.saveBtn.pack(side='left')
-        self.loadBtn.pack(side='left')
-        self.generateBtn.pack(side='left')
-        self.sendBtn.pack(side='left')
-        self.addReceipientBtn.pack(side='left')
-        self.resetBtn.pack(side='left')
-
     def addEntry(self, date, hour=8, description=""):
         var_entry, var_hours = self.dataModel.addEntry(date, description, hour)
 
@@ -92,7 +102,7 @@ class GuiApp:
         except:
             pass
 
-        self.rootFrame = RootFrame(self.tk_context)
+        self.rootFrame = RootFrame(self)
 
         try:
             self.dataModel.reset()
@@ -126,7 +136,7 @@ class GuiApp:
     def onLoad(self):
         self.reset()
         data = self.dataModel.load(config.save_path)
-        self.initMenu()
+        self.menu = AppMenu(self.rootFrame)
         self.initReceipients(data["receipients"])
         self.initEntries(data["entries"])
 
@@ -151,7 +161,7 @@ class GuiApp:
 
     def onReset(self):
         self.reset()
-        self.initMenu()
+        self.menu = AppMenu(self.rootFrame)
         self.initReceipients()
         self.initEntries()
 
