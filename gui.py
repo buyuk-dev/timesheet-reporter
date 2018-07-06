@@ -18,39 +18,17 @@ class RootFrame(tkinter.Frame):
         self.pack()
 
         
-class AppMenu(tkinter.Frame):
+class AppMenu(tkinter.Menu):
 
     def __init__(self, parent, menupady=5, btnpadx=5, *args, **kwargs):
-        tkinter.Frame.__init__(self, parent, pady=menupady, bg="grey", *args, **kwargs)
-
+        tkinter.Menu.__init__(self, *args, **kwargs)
         self.parent = parent
-        app_instance = self.parent.parent
-
-        self.save = tkinter.Button(self, text=config.save_btn_label, bg="orange")
-        self.save.configure(command = lambda : app_instance.onSave())
-        self.save.pack(side='left', padx=btnpadx)
-
-        self.load = tkinter.Button(self, text=config.load_btn_label)
-        self.load.configure(command = lambda : app_instance.onLoad())
-        self.load.pack(side='left', padx=btnpadx)
-
-        self.send = tkinter.Button(self, text=config.send_btn_label)
-        self.send.configure(command = lambda : app_instance.onSend())
-        self.send.pack(side='left', padx=btnpadx)
-
-        self.addReceipient = tkinter.Button(self, text=config.add_receipient_btn_label)
-        self.addReceipient.configure(command = lambda: app_instance.receipients.add_receipient())
-        self.addReceipient.pack(side='left', padx=btnpadx)
-
-        self.generate = tkinter.Button(self, text=config.generate_btn_label)
-        self.generate.configure(command = lambda : app_instance.onGenerate())
-        self.generate.pack(side='left', padx=btnpadx)
-        
-        self.reset = tkinter.Button(self, text=config.reset_btn_label)
-        self.reset.configure(command = lambda: app_instance.onReset(), bg="red", fg="white")
-        self.reset.pack(side='left', padx=btnpadx)
-
-        self.pack()        
+        self.add_command(label=config.save_btn_label, command=lambda : parent.onSave())
+        self.add_command(label=config.load_btn_label, command=lambda : parent.onLoad())
+        self.add_command(label=config.send_btn_label, command=lambda : parent.onSend())
+        self.add_command(label=config.add_receipient_btn_label, command=lambda: parent.receipients.add_receipient())
+        self.add_command(label=config.generate_btn_label, command=lambda : parent.onGenerate())
+        self.add_command(label=config.reset_btn_label, command=lambda: parent.onReset())     
 
 
 class WorkEntries(tkinter.Frame):
@@ -125,11 +103,12 @@ class GuiApp:
         self.tk_context.title(config.app_title)
         self.tk_context.protocol("WM_DELETE_WINDOW", self.tk_context.quit)
         self.dataModel = model.DataModel()
+        self.menu = AppMenu(self)
+        self.tk_context.config(menu=self.menu)
         self.initGui()
 
     def initGui(self, receipients=config.receipients, entries=None):
-        self.rootFrame = RootFrame(self)
-        self.menu = AppMenu(self.rootFrame)
+        self.rootFrame = RootFrame(self, padx=10, pady=10)
         self.receipients = Receipients(self.rootFrame, receipients)
         self.work_entries = WorkEntries(self.rootFrame, entries)
         
