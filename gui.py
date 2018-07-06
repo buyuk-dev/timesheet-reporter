@@ -20,35 +20,35 @@ class RootFrame(tkinter.Frame):
         
 class AppMenu(tkinter.Frame):
 
-    def __init__(self, parent, *args, **kwargs):
-        tkinter.Frame.__init__(self, parent, *args, **kwargs)
+    def __init__(self, parent, menupady=5, btnpadx=5, *args, **kwargs):
+        tkinter.Frame.__init__(self, parent, pady=menupady, bg="grey", *args, **kwargs)
 
         self.parent = parent
         app_instance = self.parent.parent
 
-        self.save = tkinter.Button(self, text=config.save_btn_label)
+        self.save = tkinter.Button(self, text=config.save_btn_label, bg="orange")
         self.save.configure(command = lambda : app_instance.onSave())
-        self.save.pack(side='left')
+        self.save.pack(side='left', padx=btnpadx)
 
         self.load = tkinter.Button(self, text=config.load_btn_label)
         self.load.configure(command = lambda : app_instance.onLoad())
-        self.load.pack(side='left')
+        self.load.pack(side='left', padx=btnpadx)
 
         self.send = tkinter.Button(self, text=config.send_btn_label)
         self.send.configure(command = lambda : app_instance.onSend())
-        self.send.pack(side='left')
+        self.send.pack(side='left', padx=btnpadx)
 
         self.addReceipient = tkinter.Button(self, text=config.add_receipient_btn_label)
         self.addReceipient.configure(command = lambda: app_instance.receipients.add_receipient())
-        self.addReceipient.pack(side='left')
+        self.addReceipient.pack(side='left', padx=btnpadx)
 
         self.generate = tkinter.Button(self, text=config.generate_btn_label)
         self.generate.configure(command = lambda : app_instance.onGenerate())
-        self.generate.pack(side='left')
+        self.generate.pack(side='left', padx=btnpadx)
         
         self.reset = tkinter.Button(self, text=config.reset_btn_label)
-        self.reset.configure(command = lambda: app_instance.onReset())
-        self.reset.pack(side='left')
+        self.reset.configure(command = lambda: app_instance.onReset(), bg="red", fg="white")
+        self.reset.pack(side='left', padx=btnpadx)
 
         self.pack()        
 
