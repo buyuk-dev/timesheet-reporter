@@ -11,6 +11,7 @@ import config
 
 
 class RootFrame(tkinter.Frame):
+
     def __init__(self, parent, *args, **kwargs):
         tkinter.Frame.__init__(self, parent.tk_context, *args, **kwargs)
         self.parent = parent
@@ -50,19 +51,19 @@ class AppMenu(tkinter.Frame):
 
         self.pack()        
 
+
+class WorkEntries(tkinter.Frame):
+
+    def __init__(self, parent, entries=None, *args, **kwargs):
+        tkinter.Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        self.pack()
         
-class GuiApp:
-
-    def __init__(self):
-        self.tk_context = tkinter.Tk()
-        self.tk_context.title(config.app_title)
-        self.tk_context.protocol("WM_DELETE_WINDOW", self.tk_context.quit)
-        self.onReset()
-
-    def initEntries(self, entries=None):
-        self.entriesHeader = tkinter.Label(self.rootFrame, text=config.entries_section_label)
+        self.entriesHeader = tkinter.Label(self, text=config.entries_section_label)
         self.entriesHeader.pack()
+
         self.entries = list()
+
         if entries is None:
             for date in common.get_dates_range(config.monday, config.week_length):
                 self.addEntry(date)
@@ -70,19 +71,14 @@ class GuiApp:
             for date, entry in entries.items():
                 self.addEntry(date, entry["hours"], entry["description"])
 
-    def initReceipients(self, receipients=config.receipients):
-        self.receipientsFrame = tkinter.Frame(self.rootFrame)
-        self.recpLabel = tkinter.Label(self.receipientsFrame, text=config.receipients_section_label)
-        self.recpLabel.pack()
-        self.receipientEntries = []
-        self.receipientsFrame.pack()
-        for recp in receipients:
-            self.onNewReceipient(recp)
-
     def addEntry(self, date, hour=8, description=""):
-        var_entry, var_hours = self.dataModel.addEntry(date, description, hour)
+        print("adding entry: {}".format((date, hour, description)))
 
-        frame = tkinter.Frame(self.rootFrame, width=config.entries_frame_width)
+        app_instance = self.parent.parent
+
+        var_entry, var_hours = app_instance.dataModel.addEntry(date, description, hour)
+
+        frame = tkinter.Frame(self, width=config.entries_frame_width)
         frame.pack()
 
         label = tkinter.Label(frame, text=date.strftime(config.date_label_format), width=config.date_label_width, anchor='w')
@@ -95,6 +91,24 @@ class GuiApp:
         entry.pack(side="left")
 
         self.entries.append((label, hour, entry))
+
+
+class GuiApp:
+
+    def __init__(self):
+        self.tk_context = tkinter.Tk()
+        self.tk_context.title(config.app_title)
+        self.tk_context.protocol("WM_DELETE_WINDOW", self.tk_context.quit)
+        self.onReset()
+
+    def initReceipients(self, receipients=config.receipients):
+        self.receipientsFrame = tkinter.Frame(self.rootFrame)
+        self.recpLabel = tkinter.Label(self.receipientsFrame, text=config.receipients_section_label)
+        self.recpLabel.pack()
+        self.receipientEntries = []
+        self.receipientsFrame.pack()
+        for recp in receipients:
+            self.onNewReceipient(recp)
 
     def reset(self):
         try:
@@ -138,7 +152,7 @@ class GuiApp:
         data = self.dataModel.load(config.save_path)
         self.menu = AppMenu(self.rootFrame)
         self.initReceipients(data["receipients"])
-        self.initEntries(data["entries"])
+        self.work_entries = WorkEntries(self.rootFrame, data["entries"])
 
     def onSend(self):
         if config.use_outlook:
@@ -163,7 +177,7 @@ class GuiApp:
         self.reset()
         self.menu = AppMenu(self.rootFrame)
         self.initReceipients()
-        self.initEntries()
+        self.work_entries = WorkEntries(self.rootFrame)
 
     def run(self):
         tkinter.mainloop()
