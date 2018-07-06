@@ -49,7 +49,7 @@ class AppMenu(tkinter.Menu):
         menu.add_command(label=config.generate_btn_label, command=lambda: parent.onGenerate(), accelerator="Ctrl-g")
         self.bind_all("<Control-g>", lambda x: parent.onGenerate())
 
-        menu.add_command(label=config.reset_btn_label, command=lambda: parent.onReset())
+        menu.add_command(label=config.reset_btn_label, command=lambda: parent.onReset(), accelerator="Ctrl-r")
         self.bind_all("<Control-r>", lambda x: parent.onReset())
 
 
