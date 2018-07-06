@@ -1,5 +1,6 @@
 import tkinter
 import sysutils
+import os
 
 import send_mail_outlook
 import send_mail
@@ -22,13 +23,34 @@ class AppMenu(tkinter.Menu):
 
     def __init__(self, parent, menupady=5, btnpadx=5, *args, **kwargs):
         tkinter.Menu.__init__(self, *args, **kwargs)
+
+        parent.tk_context.option_add('*tearOff', tkinter.FALSE)
         self.parent = parent
-        self.add_command(label=config.save_btn_label, command=lambda : parent.onSave())
-        self.add_command(label=config.load_btn_label, command=lambda : parent.onLoad())
-        self.add_command(label=config.send_btn_label, command=lambda : parent.onSend())
-        self.add_command(label=config.add_receipient_btn_label, command=lambda: parent.receipients.add_receipient())
-        self.add_command(label=config.generate_btn_label, command=lambda : parent.onGenerate())
-        self.add_command(label=config.reset_btn_label, command=lambda: parent.onReset())     
+
+        # for macos compatibility
+        if parent.tk_context.tk.call('tk', 'windowingsystem') == "aqua": 
+            menu = tkinter.Menu(self)
+            self.add_cascade(label="menu", menu=menu, accelerator="M")
+        else:
+            menu = self
+
+        menu.add_command(label=config.save_btn_label, command=lambda: parent.onSave(), accelerator="Ctrl-s")
+        self.bind_all("<Control-s>", lambda x: parent.onSave())
+
+        menu.add_command(label=config.load_btn_label, command=lambda: parent.onLoad(), accelerator="Ctrl-l")
+        self.bind_all("<Control-l>", lambda x: parent.onLoad())
+
+        menu.add_command(label=config.send_btn_label, command=lambda: parent.onSend(), accelerator="Ctrl-m")
+        self.bind_all("<Control-m>", lambda x: parent.onSend())
+
+        menu.add_command(label=config.add_receipient_btn_label, command=lambda: parent.receipients.add_receipient(), accelerator="Ctrl-e")
+        self.bind_all("<Control-e>", lambda x: parent.receipients.add_receipient())
+
+        menu.add_command(label=config.generate_btn_label, command=lambda: parent.onGenerate(), accelerator="Ctrl-g")
+        self.bind_all("<Control-g>", lambda x: parent.onGenerate())
+
+        menu.add_command(label=config.reset_btn_label, command=lambda: parent.onReset())
+        self.bind_all("<Control-r>", lambda x: parent.onReset())
 
 
 class WorkEntries(tkinter.Frame):
