@@ -15,6 +15,7 @@ class RootFrame(tkinter.Frame):
     def __init__(self, parent, *args, **kwargs):
         tkinter.Frame.__init__(self, parent.tk_context, *args, **kwargs)
         self.parent = parent
+        self.pack()
 
         
 class AppMenu(tkinter.Frame):
@@ -38,7 +39,7 @@ class AppMenu(tkinter.Frame):
         self.send.pack(side='left')
 
         self.addReceipient = tkinter.Button(self, text=config.add_receipient_btn_label)
-        self.addReceipient.configure(command = lambda: app_instance.onNewReceipient())
+        self.addReceipient.configure(command = lambda: app_instance.receipients.add_receipient())
         self.addReceipient.pack(side='left')
 
         self.generate = tkinter.Button(self, text=config.generate_btn_label)
@@ -95,7 +96,7 @@ class WorkEntries(tkinter.Frame):
         
 class Receipients(tkinter.Frame):
 
-    def __init__(self, parent, receipients=config.receipients, *args, **kwargs):
+    def __init__(self, parent, receipients=[], *args, **kwargs):
         tkinter.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.pack()
@@ -123,23 +124,15 @@ class GuiApp:
         self.tk_context = tkinter.Tk()
         self.tk_context.title(config.app_title)
         self.tk_context.protocol("WM_DELETE_WINDOW", self.tk_context.quit)
-        self.onReset()
+        self.dataModel = model.DataModel()
+        self.initGui()
 
-    def reset(self):
-        try:
-            self.rootFrame.destroy()
-        except:
-            pass
-
+    def initGui(self, receipients=config.receipients, entries=None):
         self.rootFrame = RootFrame(self)
-
-        try:
-            self.dataModel.reset()
-        except:
-            self.dataModel = model.DataModel()
-
-        self.rootFrame.pack()
-
+        self.menu = AppMenu(self.rootFrame)
+        self.receipients = Receipients(self.rootFrame, receipients)
+        self.work_entries = WorkEntries(self.rootFrame, entries)
+        
     def onGenerate(self):
         entries = self.dataModel.getEntries()
         data = [
@@ -155,11 +148,10 @@ class GuiApp:
         self.dataModel.save(config.save_path)
 
     def onLoad(self):
-        self.reset()
+        self.rootFrame.destroy()
+        self.dataModel.reset()
         data = self.dataModel.load(config.save_path)
-        self.menu = AppMenu(self.rootFrame)
-        self.receipients = Receipients(self.rootFrame, data["receipients"])
-        self.work_entries = WorkEntries(self.rootFrame, data["entries"])
+        self.initGui(data["receipients"], data["entries"])
 
     def onSend(self):
         if config.use_outlook:
@@ -181,10 +173,9 @@ class GuiApp:
             )
 
     def onReset(self):
-        self.reset()
-        self.menu = AppMenu(self.rootFrame)
-        self.receipients = Receipients(self.rootFrame)
-        self.work_entries = WorkEntries(self.rootFrame)
+        self.rootFrame.destroy()
+        self.dataModel.reset()
+        self.initGui()
 
     def run(self):
         tkinter.mainloop()
