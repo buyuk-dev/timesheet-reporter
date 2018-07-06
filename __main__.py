@@ -1,6 +1,6 @@
-import importlib.util
 import os
 import sys
+import traceback
 
 
 workdir = os.path.dirname(os.path.abspath(__file__))
@@ -20,5 +20,5 @@ if __name__ == '__main__':
         app.run()
 
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         input("press enter to exit...")
