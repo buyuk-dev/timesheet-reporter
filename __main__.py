@@ -15,9 +15,10 @@ if __name__ == '__main__':
 
         if "DEBUG" not in sys.argv:
             sysutils.hide_terminal_window()
+
         app = gui.GuiApp()
         app.run()
 
     except Exception as e:
         print(e)
-        input()
+        input("press enter to exit...")
