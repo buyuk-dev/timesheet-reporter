@@ -13,7 +13,8 @@ if __name__ == '__main__':
         import sysutils
         import gui
 
-        sysutils.hide_terminal_window()
+        if "DEBUG" not in sys.argv:
+            sysutils.hide_terminal_window()
         app = gui.GuiApp()
         app.run()
 
