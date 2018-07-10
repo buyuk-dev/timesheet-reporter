@@ -52,6 +52,41 @@ class AppMenu(tkinter.Menu):
         self.bind_all("<Control-r>", lambda x: parent.onReset())
 
 
+class PasswordDialog(tkinter.Toplevel):
+
+    def __init__(self, parent):
+        tkinter.Toplevel.__init__(self)
+        self.title("Provide email credentials")
+        self.parent = parent
+        
+        self.username = tkinter.Entry(self, width=50)
+        if config.credentials.username is not None:
+            self.username.insert(0, config.credentials.username)
+        self.username.pack()
+        
+        self.password = tkinter.Entry(self, show="*", width=50)
+        self.password.pack()
+        
+        self.options_frame = tkinter.Frame(self)
+        self.options_frame.pack()
+        
+        self.confirm = tkinter.Button(self.options_frame, text="ok", command=lambda: self.onConfirm())
+        self.confirm.pack(side="left")
+        
+        self.cancel = tkinter.Button(self.options_frame, text="cancel", command=lambda: self.onCancel())
+        self.cancel.pack(side="left")
+
+    def onConfirm(self):
+        username = self.username.get()
+        password = self.password.get()
+        self.destroy()
+        self.parent.onCredentialsConfirmed(username, password)
+        
+    def onCancel(self):
+        self.parent.onCredentialsConfirmed(None, None)
+        self.destroy()
+
+
 class WorkEntries(tkinter.Frame):
 
     def __init__(self, parent, entries=None, *args, **kwargs):
@@ -132,7 +167,19 @@ class GuiApp:
         self.rootFrame = RootFrame(self, padx=10, pady=10)
         self.receipients = Receipients(self.rootFrame, receipients)
         self.work_entries = WorkEntries(self.rootFrame, entries)
-        
+       
+    def get_credentials(self):
+        if (config.credentials.password is not None) and (config.credentials.username is not None):
+            print("reading credentials from config file")
+            return config.credentials
+        else:
+            print("trying to obtain credentials by dialog")
+            self.rootFrame.wait_window(PasswordDialog(self))
+            class credentials:
+                username = self.username
+                password = self.password
+            return credentials
+       
     def onGenerate(self):
         entries = self.dataModel.getEntries()
         data = [
@@ -156,8 +203,15 @@ class GuiApp:
     def onSend(self):
         if config.use_outlook:
             kwargs = {}
+            print("sending with outlook")
         else:
-            kwargs = {"credentials": config.credentials}
+            print("trying to send without outlook")
+            try:
+                credentials = self.get_credentials()
+                kwargs = {"credentials": credentials}
+            except Exception as e:
+                print(e)
+                return
 
         send_mail.send_mail(
             config.sender_address,
@@ -172,6 +226,12 @@ class GuiApp:
         self.rootFrame.destroy()
         self.dataModel.reset()
         self.initGui()
+        
+    def onCredentialsConfirmed(self, username, password):
+        if (username in (None, "")) or (password in (None, "")):
+            raise Exception("credentials not provided")
+        self.username = username
+        self.password = password
 
     def run(self):
         tkinter.mainloop()
