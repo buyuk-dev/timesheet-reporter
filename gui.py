@@ -33,23 +33,23 @@ class AppMenu(tkinter.Menu):
         else:
             menu = self
 
-        menu.add_command(label=config.save_btn_label, command=lambda: parent.onSave(), accelerator="Ctrl-s")
-        self.bind_all("<Control-s>", lambda x: parent.onSave())
+        menu.add_command(label=config.save_btn_label, command=lambda: parent.onSave())
+        self.bind_all(config.KeyboardShortcuts.save, lambda x: parent.onSave())
 
-        menu.add_command(label=config.load_btn_label, command=lambda: parent.onLoad(), accelerator="Ctrl-l")
-        self.bind_all("<Control-l>", lambda x: parent.onLoad())
+        menu.add_command(label=config.load_btn_label, command=lambda: parent.onLoad())
+        self.bind_all(config.KeyboardShortcuts.load, lambda x: parent.onLoad())
 
-        menu.add_command(label=config.send_btn_label, command=lambda: parent.onSend(), accelerator="Ctrl-m")
-        self.bind_all("<Control-m>", lambda x: parent.onSend())
+        menu.add_command(label=config.send_btn_label, command=lambda: parent.onSend())
+        self.bind_all(config.KeyboardShortcuts.send, lambda x: parent.onSend())
 
-        menu.add_command(label=config.add_receipient_btn_label, command=lambda: parent.receipients.add_receipient(), accelerator="Ctrl-e")
-        self.bind_all("<Control-e>", lambda x: parent.receipients.add_receipient())
+        menu.add_command(label=config.add_receipient_btn_label, command=lambda: parent.receipients.add_receipient())
+        self.bind_all(config.KeyboardShortcuts.add_receipient, lambda x: parent.receipients.add_receipient())
 
-        menu.add_command(label=config.generate_btn_label, command=lambda: parent.onGenerate(), accelerator="Ctrl-g")
-        self.bind_all("<Control-g>", lambda x: parent.onGenerate())
+        menu.add_command(label=config.generate_btn_label, command=lambda: parent.onGenerate())
+        self.bind_all(config.KeyboardShortcuts.generate, lambda x: parent.onGenerate())
 
-        menu.add_command(label=config.reset_btn_label, command=lambda: parent.onReset(), accelerator="Ctrl-r")
-        self.bind_all("<Control-r>", lambda x: parent.onReset())
+        menu.add_command(label=config.reset_btn_label, command=lambda: parent.onReset())
+        self.bind_all(config.KeyboardShortcuts.reset, lambda x: parent.onReset())
 
 
 class PasswordDialog(tkinter.Toplevel):

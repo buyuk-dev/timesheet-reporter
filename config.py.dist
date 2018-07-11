@@ -56,9 +56,16 @@ Pozdrawiam,
 """.format(employee_name)
 
 
-# Application config
-app_title = "Time Report Creator"
+class KeyboardShortcuts:
+    save = "<Control-s>"
+    load = "<Control-l>"
+    reset = "<Control-r>"
+    send = "<Control-m>"
+    add_receipient = "<Control-e>"
+    generate = "<Control-g>"
 
+
+app_title = "Time Report Creator"
 entries_section_label = "Work entries"
 receipients_section_label = "Receipients"
 generate_btn_label = "generate"
